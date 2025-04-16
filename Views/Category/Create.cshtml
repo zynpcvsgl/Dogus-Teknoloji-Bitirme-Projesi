@@ -1,0 +1,17 @@
+@model BlogApp.Entity.Category
+
+@{
+    ViewData["Title"] = "Yeni Kategori Ekle";
+}
+
+<h2>Yeni Kategori Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

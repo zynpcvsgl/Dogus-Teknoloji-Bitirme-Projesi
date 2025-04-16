@@ -1,0 +1,76 @@
+@model PostViewModel
+@using BlogApp.Entity
+
+@{
+    ViewData["Title"] = "Postlar";
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    var selectedCategoryId = Context.Request.Query["categoryId"];
+    var searchQuery = Context.Request.Query["q"];
+    var tagQuery = Context.Request.Query["tag"];
+}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2>Blog Gönderileri</h2>
+        @if (User.Identity!.IsAuthenticated)
+        {
+            <a asp-controller="Posts" asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Yeni Post Oluştur
+            </a>
+        }
+    </div>
+</div>
+
+<div class="row mb-4">
+    <form asp-action="Index" method="get" class="row g-2">
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Ara..." value="@searchQuery" />
+        </div>
+        <div class="col-md-3">
+            <select name="categoryId" class="form-select">
+                <option value="">Kategori seçin</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Id" selected="@((selectedCategoryId == category.Id.ToString()) ? "selected" : "")">@category.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="tag" class="form-control" placeholder="Etiket (tag)" value="@tagQuery" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-outline-primary w-100" type="submit">Filtrele</button>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    @if (Model.Posts.Any())
+    {
+        foreach (var post in Model.Posts)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <a asp-controller="Posts" asp-action="Details" asp-route-url="@post.Url">
+                        <img src="~/img/@post.Image" class="card-img-top img-fluid rounded-top" alt="@post.Title" style="object-fit: cover; height: 220px;" />
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <a asp-controller="Posts" asp-action="Details" asp-route-url="@post.Url" class="text-dark text-decoration-none">
+                                @post.Title
+                            </a>
+                        </h5>
+                        <p class="card-text text-truncate">@post.Description</p>
+                        <p class="card-text mt-auto">
+                            <small class="text-muted">@post.PublishedOn.ToString("dd MMM yyyy") | @post.Category?.Name</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">Hiç blog gönderisi bulunamadı.</div>
+    }
+</div>

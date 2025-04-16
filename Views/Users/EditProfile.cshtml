@@ -1,0 +1,41 @@
+@model BlogApp.Models.UserEditViewModel
+
+@{
+    ViewData["Title"] = "Profili Düzenle";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h3>Profil Bilgilerini Güncelle</h3>
+        <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Yeni Şifre</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label>Profil Fotoğrafı</label><br />
+                @if (!string.IsNullOrEmpty(Model.ExistingImage))
+                {
+                    <img src="~/img/@Model.ExistingImage" alt="Mevcut Fotoğraf" style="max-height:150px;" class="mb-2 rounded" />
+                }
+                <input asp-for="ImageFile" type="file" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+</div>

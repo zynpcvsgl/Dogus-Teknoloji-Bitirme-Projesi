@@ -1,0 +1,38 @@
+@model List<BlogApp.Entity.Comment>
+
+@{
+    ViewData["Title"] = "Yorum Yönetimi";
+}
+
+<div class="container mt-4">
+    <h2>Yorum Yönetimi</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Post</th>
+                <th>Kullanıcı</th>
+                <th>Yorum</th>
+                <th>Tarih</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in Model)
+            {
+                <tr>
+                    <td>@comment.Post?.Title</td>
+                    <td>@comment.User?.UserName</td>
+                    <td>@comment.Text</td>
+                    <td>@comment.PublishedOn.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="DeleteComment" asp-route-id="@comment.CommentId"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Bu yorumu silmek istediğinize emin misiniz?')">
+                            Sil
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

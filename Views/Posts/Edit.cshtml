@@ -1,0 +1,59 @@
+@model PostCreateViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<div class="row">
+    <div class="col-12">
+        <div class="bg-white p-4">
+            <h1>Post Edit</h1>
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="PostId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label"></label>
+                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Kategori</label>
+                    <select asp-for="CategoryId" class="form-select"
+                            asp-items='@(new SelectList(ViewBag.Categories, "Id", "Name"))'>
+                        <option value="">-- Seçiniz --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageFile" class="form-label">Yeni Görsel (isteğe bağlı)</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                @if (User.IsInRole("admin"))
+                {
+                    <div class="form-check mb-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-success">Güncelle</button>
+            </form>
+        </div>
+    </div>
+</div>

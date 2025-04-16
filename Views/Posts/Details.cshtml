@@ -1,0 +1,123 @@
+@model BlogApp.Entity.Post
+@using System.Security.Claims
+
+<div class="row">
+    <div class="col-12">
+        <!-- Post -->
+        <div class="card mb-4">
+            <img src="~/img/@Model.Image" class="card-img-top" style="max-height: 400px; object-fit: cover;" alt="@Model.Title" />
+            <div class="card-body">
+                <h3 class="card-title">@Model.Title</h3>
+                <p class="card-text text-muted">
+                    @Model.PublishedOn.ToString("dd MMMM yyyy") |
+                    Kategori: @Model.Category?.Name
+                </p>
+                <p class="card-text">@Html.Raw(Model.Content)</p>
+            </div>
+        </div>
+
+        <!-- Yorumlar -->
+        <div class="mb-4" id="commentsContainer">
+            <h5 id="commentCount">Yorumlar (@(Model.Comments?.Count ?? 0))</h5>
+
+            @if (Model.Comments != null && Model.Comments.Any())
+            {
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="border-bottom mb-3 pb-2 d-flex align-items-start">
+                        <img src="~/img/@(comment.User?.Image ?? "default.jpg")"
+                             class="rounded-circle me-2"
+                             alt="avatar"
+                             style="width: 40px; height: 40px; object-fit: cover;" />
+                        <div>
+                            <strong>@comment.User?.UserName</strong>
+                            <small class="text-muted d-block">(@comment.PublishedOn.ToString("g"))</small>
+                            <p class="mb-0">@comment.Text</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">Henüz yorum yapılmamış.</p>
+            }
+        </div>
+
+        <!-- Yorum Formu -->
+        @if (User.Identity!.IsAuthenticated)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5>Yorum Yap</h5>
+                    <form id="commentForm">
+                        <input type="hidden" name="PostId" value="@Model.PostId" />
+                        <div class="mb-3">
+                            <textarea id="commentText" name="Text" class="form-control" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-light me-1" onclick="insertEmoji('😊')">😊</button>
+                            <button type="button" class="btn btn-light me-1" onclick="insertEmoji('🔥')">🔥</button>
+                            <button type="button" class="btn btn-light me-1" onclick="insertEmoji('👍')">👍</button>
+                            <button type="button" class="btn btn-light me-1" onclick="insertEmoji('❤️')">❤️</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mt-3">
+                Yorum yapmak için <a asp-controller="Users" asp-action="Login">giriş yap</a>.
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function insertEmoji(emoji) {
+            const textarea = document.getElementById("commentText");
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            textarea.value = text.substring(0, start) + emoji + text.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+        }
+
+        $("#commentForm").on("submit", function (e) {
+            e.preventDefault();
+
+            $.post("/Posts/AddComment", $(this).serialize(), function (data) {
+                if (data.success) {
+                    const commentHtml = `
+                        <div class="border-bottom mb-3 pb-2 d-flex align-items-start">
+                            <img src="/img/${data.avatar || 'default.jpg'}"
+                                 class="rounded-circle me-2"
+                                 alt="avatar"
+                                 style="width: 40px; height: 40px; object-fit: cover;" />
+                            <div>
+                                <strong>${data.username}</strong>
+                                <small class="text-muted d-block">(${data.published})</small>
+                                <p class="mb-0">${data.text}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    $("#commentCount").after(commentHtml);
+
+
+                    const countText = $("#commentCount").text();
+                    const currentCount = parseInt(countText.match(/\d+/)) || 0;
+                    $("#commentCount").text(`Yorumlar (${currentCount + 1})`);
+
+                    $("#commentText").val('');
+                } else {
+                    alert(data.message || "Yorum eklenirken bir hata oluştu.");
+                }
+            });
+        });
+    </script>
+}

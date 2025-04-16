@@ -1,0 +1,43 @@
+@model BlogApp.Models.UserProfileViewModel
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Profilim</h4>
+            </div>
+            <div class="card-body">
+
+                <form asp-action="Profile" asp-controller="Users" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Ad Soyad</label>
+                        <input asp-for="Name" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">E-Posta</label>
+                        <input asp-for="Email" class="form-control" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NewPassword" class="form-label">Yeni Şifre</label>
+                        <input asp-for="NewPassword" type="password" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ImageFile" class="form-label">Profil Fotoğrafı</label>
+                        <input asp-for="ImageFile" type="file" class="form-control" />
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="~/img/@Model.Image" class="img-thumbnail" style="max-height: 150px;" />
+                    }
+
+                    <button type="submit" class="btn btn-success">Güncelle</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Post</h5>
+                    <p class="card-text display-6">@ViewBag.TotalPosts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Yorum</h5>
+                    <p class="card-text display-6">@ViewBag.TotalComments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Kategori</h5>
+                    <p class="card-text display-6">@ViewBag.TotalCategories</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
